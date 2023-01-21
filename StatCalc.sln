@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatClac.Api", "StatClac.Api\StatClac.Api.csproj", "{4A460BC2-C95E-4AEB-AF13-13536F557B25}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatCalc.Api", "StatCalc.Api\StatCalc.Api.csproj", "{4A460BC2-C95E-4AEB-AF13-13536F557B25}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatCalc.Infrastructure", "StatCalc.Infrastructure\StatCalc.Infrastructure.csproj", "{477102BF-9D65-4893-B8C7-D31419AEF029}"
 EndProject
