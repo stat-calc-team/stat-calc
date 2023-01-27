@@ -24,6 +24,7 @@ public class TestController : ControllerBase
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public async Task<string> HealthCheck()
     {
+        // Just a test commit
         return await _testService.HealthCheck();
     }
 }
