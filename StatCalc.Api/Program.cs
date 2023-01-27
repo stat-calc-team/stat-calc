@@ -2,6 +2,8 @@ using StatCalc.Api.Extensions;
 using StatCalc.Infrastructure.AutoMapperProfiles;
 using StatCalc.Infrastructure.Middlewares;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services.AddControllers();
@@ -12,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
     
     builder.Services.AddDI();
     builder.Services.ApplySwaggerSettings();
+    builder.Services.AddAuth(builder.Configuration);
     builder.Services.AddAutoMapper(typeof(TstProfile));
 }
 
@@ -27,6 +30,8 @@ var app = builder.Build();
     }
 
     app.UseMiddleware<ErrorHandlerMiddleware>();
+    
+    app.UseCors(cfg => cfg.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
     app.UseHttpsRedirection();
     app.UseAuthentication();

@@ -1,6 +1,14 @@
 ﻿using System.Reflection;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.OpenApi.Models;
+using StatCalc.Infrastructure.Auth;
 
 namespace StatCalc.Api.Extensions;
 
@@ -44,6 +52,40 @@ public static class ServiceExtensions
                 }
             });
         });
+    }
+
+    /// <summary>
+    /// Adds authentication for project
+    /// </summary>
+    /// <param name="service"><see cref="IServiceCollection"/></param>
+    /// <param name="configuration"><see cref="IConfiguration"/> config data from user secrets</param>
+    public static void AddAuth(this IServiceCollection service, IConfiguration configuration)
+    {
+        //service.AddAuthentication(o => o.DefaultAuthenticateScheme = "Bearer")
+        //service.AddAuthentication("Bearer")
+        /*service.AddAuthentication(o =>
+            {
+                o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                o.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+                o.DefaultSignInScheme = GoogleDefaults.AuthenticationScheme;
+            })
+            .AddCookie()
+            .AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId =  configuration["Authentication:Google:ClientId"];
+                googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+
+                //googleOptions.SaveTokens = true;
+            });*/
+        service.AddAuthentication(options =>
+        {
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+        }).AddJwtBearer();
+        
+        service.AddTransient<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
     }
     
 }
