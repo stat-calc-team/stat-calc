@@ -10,10 +10,10 @@ namespace StatCalc.Api.Controllers;
 public class JwtGenerator
 {
     readonly RsaSecurityKey _key;
-    public JwtGenerator(string signingKey)
+    public JwtGenerator(string privateKey)
     {
         RSA privateRSA = RSA.Create();
-        privateRSA.ImportRSAPrivateKey(Convert.FromBase64String(signingKey), out _);
+        privateRSA.ImportRSAPrivateKey(Convert.FromBase64String(privateKey), out _);
         _key = new RsaSecurityKey(privateRSA);
     }
 
