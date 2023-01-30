@@ -26,6 +26,8 @@ var app = builder.Build();
         app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "StatCalc"));
     }
 
+    app.UseCors(cfg => cfg.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
     app.UseMiddleware<ErrorHandlerMiddleware>();
 
     app.UseHttpsRedirection();
