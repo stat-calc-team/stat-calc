@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
     
     builder.Services.AddDI();
     builder.Services.ApplySwaggerSettings();
-    builder.Services.AddAuth();
+    builder.Services.AddAuth(builder.Configuration);
     builder.Services.AddAutoMapper(typeof(TstProfile));
 }
 

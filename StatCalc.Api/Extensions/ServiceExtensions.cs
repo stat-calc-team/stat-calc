@@ -1,4 +1,6 @@
 ﻿using System.Reflection;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.PlatformAbstractions;
@@ -23,7 +25,7 @@ public static class ServiceExtensions
         {
             c.IncludeXmlComments(XmlCommentsFilePathContentShare());
             c.SwaggerDoc("v1", new OpenApiInfo {Title = "StatCalc", Version = "v1"});
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            /*c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
             {
                 Description = @"JWT Authorization header using the Bearer scheme. 
                       Enter 'Bearer' [space] and then your token in the text input below. Example: 'Bearer 12345abcdef'",
@@ -45,7 +47,7 @@ public static class ServiceExtensions
                     },
                     Array.Empty<string>()
                 }
-            });
+            });*/
         });
     }
 
@@ -53,18 +55,27 @@ public static class ServiceExtensions
     /// Adds authentication for project
     /// </summary>
     /// <param name="service"><see cref="IServiceCollection"/></param>
-    public static void AddAuth(this IServiceCollection service)
+    /// <param name="configuration"><see cref="IConfiguration"/> config data from user secrets</param>
+    public static void AddAuth(this IServiceCollection service, IConfiguration configuration)
     {
-        service.AddAuthentication(options =>
-        {
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        /*
+          options =>
+            {
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+            }
+         */
+        service.AddAuthentication(GoogleDefaults.AuthenticationScheme)
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId =  configuration["Authentication:Google:ClientId"];
+                googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
 
-        }).AddJwtBearer();
-        
-        // Add jwt bearer options for google
-        service.AddTransient<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
+                googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                
+                googleOptions.SaveTokens = true;
+            });
     }
     
 }

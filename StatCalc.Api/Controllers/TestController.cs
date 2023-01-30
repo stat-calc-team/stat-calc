@@ -48,7 +48,7 @@ public class TestController : ControllerBase
         
         return await _testService.HealthCheck();
     }
-    
+
 
     [AllowAnonymous]
     [HttpPost("authenticate")]
