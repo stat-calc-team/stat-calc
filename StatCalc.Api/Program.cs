@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.ApplySwaggerSettings();
     builder.Services.AddAuth(builder.Configuration);
     builder.Services.AddAutoMapper(typeof(TstProfile));
+    builder.Services.ConfigurationsSetUp(builder.Configuration);
 }
 
 
