@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StatCalc.Infrastructure.Services;
 
@@ -7,20 +8,19 @@ namespace StatCalc.Api.Controllers;
 [Route("[controller]")]
 public class TestController : ControllerBase
 {
-    private readonly ILogger<TestController> _logger;
     private readonly ITestService _testService;
 
-    public TestController(ILogger<TestController> logger, ITestService testService)
+    public TestController(ITestService testService)
     {
-        _logger = logger;
         _testService = testService;
     }
 
     /// <summary>
-    /// Just simple health check endpoint
+    /// Just simple health check endpoint. Only for authorized users.
     /// </summary>
     [HttpGet]
     [Route("[action]")]
+    [Authorize]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public async Task<string> HealthCheck()
     {

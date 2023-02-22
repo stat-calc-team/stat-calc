@@ -1,6 +1,9 @@
 ﻿using System.Reflection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.OpenApi.Models;
+using StatCalc.Infrastructure.Auth;
 
 namespace StatCalc.Api.Extensions;
 
@@ -27,7 +30,7 @@ public static class ServiceExtensions
                 Name = "Authorization",
                 In = ParameterLocation.Header,
                 BearerFormat = "JWT",
-                Scheme = "Bearer"
+                Scheme = JwtBearerDefaults.AuthenticationScheme
             });
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
@@ -45,5 +48,21 @@ public static class ServiceExtensions
             });
         });
     }
-    
+
+    /// <summary>
+    /// Adds authentication for project
+    /// </summary>
+    /// <param name="service"><see cref="IServiceCollection"/></param>
+    public static void AddAuth(this IServiceCollection service)
+    {
+        service.AddAuthentication(options =>
+        {
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer();
+        
+        // Inject the configuration so the public key is used to validate the JWT
+        service.AddTransient<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
+    }
 }
