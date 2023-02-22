@@ -12,7 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
     
     builder.Services.AddDI();
     builder.Services.ApplySwaggerSettings();
+    builder.Services.AddAuth();
     builder.Services.AddAutoMapper(typeof(TstProfile));
+    builder.Services.ConfigurationsSetUp(builder.Configuration);
 }
 
 
@@ -26,7 +28,11 @@ var app = builder.Build();
         app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "StatCalc"));
     }
 
+    app.UseCors(cfg => cfg.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
     app.UseMiddleware<ErrorHandlerMiddleware>();
+    
+    app.UseCors(cfg => cfg.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
     app.UseHttpsRedirection();
     app.UseAuthentication();
