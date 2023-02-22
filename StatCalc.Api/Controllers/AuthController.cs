@@ -1,9 +1,7 @@
-﻿using Google.Apis.Auth;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using StatCalc.Infrastructure.Auth;
-using StatCalc.Infrastructure.Configurations;
+using StatCalc.Infrastructure.Dtos;
+using StatCalc.Infrastructure.Services;
 
 namespace StatCalc.Api.Controllers;
 
@@ -11,34 +9,23 @@ namespace StatCalc.Api.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly JwtGenerator _jwtGenerator;
-    private readonly GoogleSettings _googleSettings;
+    private readonly IAuthService _authService;
     
-    public AuthController(IOptions<GoogleSettings> googleSettings)
+    public AuthController(IAuthService authService)
     {
-        _googleSettings = googleSettings.Value;
-        _jwtGenerator = new JwtGenerator(_googleSettings.PrivateKey); 
+        _authService = authService;
     }
     
     /// <summary>
-    /// 
+    /// Returns access token for google authorization
     /// </summary>
     /// <param name="idToken"></param>
     /// <returns></returns>
     [AllowAnonymous]
-    [HttpPost("Token")]
-    public IActionResult GetToken([FromQuery] string idToken)
+    [HttpPost("[action]")]
+    public async Task<AuthorizationDto> Authorize([FromQuery] string idToken)
     {
-        var settings = new GoogleJsonWebSignature.ValidationSettings
-        {
-            Audience = new List<string> { _googleSettings.ClientId }
-        };
-
-        var payload  = GoogleJsonWebSignature.ValidateAsync(idToken, settings).Result;
-        
-        return Ok(new
-        {
-            AuthToken = _jwtGenerator.CreateUserAuthToken(payload.Email)
-        });
+        // TODO add user to database if user does not exist
+        return await _authService.GetAuthTokenFromIdToken(idToken);
     }
 }

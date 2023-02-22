@@ -1,6 +1,4 @@
 ﻿using System.Reflection;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.PlatformAbstractions;
@@ -55,8 +53,7 @@ public static class ServiceExtensions
     /// Adds authentication for project
     /// </summary>
     /// <param name="service"><see cref="IServiceCollection"/></param>
-    /// <param name="configuration"><see cref="IConfiguration"/> config data from user secrets</param>
-    public static void AddAuth(this IServiceCollection service, IConfiguration configuration)
+    public static void AddAuth(this IServiceCollection service)
     {
         service.AddAuthentication(options =>
         {
@@ -65,25 +62,7 @@ public static class ServiceExtensions
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer();
         
+        // Inject the configuration so the public key is used to validate the JWT
         service.AddTransient<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
-        /*
-          options =>
-            {
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
-            }
-         */
-        /*service.AddAuthentication(GoogleDefaults.AuthenticationScheme)
-            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddGoogle(googleOptions =>
-            {
-                googleOptions.ClientId =  configuration["Authentication:Google:ClientId"];
-                googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
-
-                googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                
-                googleOptions.SaveTokens = true;
-            });*/
     }
-    
 }

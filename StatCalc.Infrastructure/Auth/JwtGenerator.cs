@@ -5,15 +5,14 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace StatCalc.Infrastructure.Auth;
 
-
 public class JwtGenerator
 {
-    readonly RsaSecurityKey _key;
+    private readonly RsaSecurityKey _key;
     public JwtGenerator(string privateKey)
     {
-        RSA privateRSA = RSA.Create();
-        privateRSA.ImportRSAPrivateKey(Convert.FromBase64String(privateKey), out _);
-        _key = new RsaSecurityKey(privateRSA);
+        var privateRsa = RSA.Create();
+        privateRsa.ImportRSAPrivateKey(Convert.FromBase64String(privateKey), out _);
+        _key = new RsaSecurityKey(privateRsa);
     }
 
     public string CreateUserAuthToken(string userId)
@@ -21,11 +20,11 @@ public class JwtGenerator
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Audience = "myApi",
+            Audience = "StatCalcApi",
             Issuer = "AuthService",
-            Subject = new ClaimsIdentity(new Claim[]
+            Subject = new ClaimsIdentity(new []
             {
-                new Claim(ClaimTypes.Sid, userId.ToString())
+                new Claim(ClaimTypes.Sid, userId)
             }),
             Expires = DateTime.UtcNow.AddMinutes(60),
             SigningCredentials = new SigningCredentials(_key, SecurityAlgorithms.RsaSha256)

@@ -16,7 +16,7 @@ public class TestController : ControllerBase
     }
 
     /// <summary>
-    /// Just simple health check endpoint
+    /// Just simple health check endpoint. Only for authorized users.
     /// </summary>
     [HttpGet]
     [Route("[action]")]
