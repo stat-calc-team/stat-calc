@@ -12,7 +12,7 @@
     "solution-stack"       : "64bit Amazon Linux 2 v2.5.0 running .NET Core",
     "environment-type"     : "SingleInstance",
     "cname"                : "statcalcapi-dev",
-    "instance-type"        : "t3a.micro",
+    "instance-type"        : "t2.nano",
     "key-pair"             : "",
     "instance-profile"     : "aws-elasticbeanstalk-ec2-role",
     "service-role"         : "aws-elasticbeanstalk-service-role",
